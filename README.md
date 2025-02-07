@@ -1,0 +1,1 @@
+Fan made log and stats of the podcast: The Magnus Archives. Information will be updated upon progress through the media
