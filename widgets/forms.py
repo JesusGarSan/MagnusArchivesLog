@@ -19,7 +19,9 @@ def statement_log_form(key,ep=0, tit="",aut="",date=None,start=None,end=None,loc
 
     if id == None:
         if statement_date == None: id = None
-        else: id = '#'+str(statement_date).replace('-', '')[1:]
+        else:
+            id = '#'+str(statement_date).replace('-', '')[1:]
+            id = id[0:4]+id[6:8]+id[4:6]
     ID = col[0].text_input("Statement ID", id)
 
     short_summary = st.text_input("Short summary:", placeholder="Max. 200 charaxters", max_chars=200,value=sum,key=key+"_sum")
