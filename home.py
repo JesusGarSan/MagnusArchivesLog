@@ -5,4 +5,5 @@ import config.init
 
 
 config.init.init("Home", "👁️")
+st.divider()
 

@@ -1,7 +1,7 @@
 [theme]
 base="dark"
-backgroundColor="#182821"
-secondaryBackgroundColor="#559670"
+secondaryBackgroundColor="#182821"
+backgroundColor="#559670"
 
 
 [client]

@@ -2,6 +2,7 @@ import streamlit as st
 from utils.read_statements import *
 from utils.write_statements import *
 from utils.statement_checks import *
+from widgets.forms import *
 
 # Page config
 import config.init
@@ -9,42 +10,64 @@ config.init.init("Add statements", "🪶")
 
 
 if True: # Authentication verification (to be implemented)
-    # with st.form("New statement", enter_to_submit=False):
-        st.subheader("Add a new statement to the log")
-        col = st.columns(4)
-        episode = col[0].number_input("Episode",min_value=0,max_value=1000)
-        title   = col[1].text_input("Title",max_chars=100,placeholder="The Puppeteer")
-        author  = col[2].text_input("Statement given by:",max_chars=100,placeholder="Mathew Smith")
-        statement_date    = col[3].date_input("Statement given on:")
+    tab_labels = ["Add a new statement to the log", "Edit existing statement"]
+    tabs = st.tabs(tab_labels)
+    with tabs[0]:
+        st.subheader(tab_labels[0])
+        form_data = statement_log_form("add");
 
-        start_date = col[0].date_input("Start date of the events:")
-        end_date   = col[1].date_input("End date of the events:")
-        location   = col[2].text_input("Main Location:",placeholder="Doncaster, UK", max_chars=50)
-        eyes       = col[3].selectbox('Were "eyes" mentioned?',["Yes", "No"], 1)
-
-        id = '#'+str(statement_date).replace('-', '')[1:]
-        ID = col[0].text_input("Statement ID", id)
-
-        short_summary = st.text_input("Short summary:", placeholder="Max. 200 charaxters", max_chars=200)
-
-        form_data = {
-            "Episode": episode,
-            "Title": title,
-            "Statement ID": ID,
-            "Satatement given by": author,
-            "Statement given on": statement_date,
-
-            "Start of events": start_date,
-            "End of events": end_date,
-            "Main Location": location,
-            "Short Summary": short_summary,
-            "Eyes Mentioned": eyes,
-        }
-
-        # submitted = st.form_submit_button()
         submitted = st.button("Submit")
         if submitted:
             valid, text = write_statement(form_data)
+            if valid:
+                st.success(text)
+            else:
+                st.error(text)
+
+    with tabs[1]:
+        st.subheader(tab_labels[1])
+        options = get_identificators()
+        choice = st.selectbox("Choose the statement you want to edit", options)
+        id = choice[-9:-1]
+        df = read_log()
+        df = df[df["Statement ID"] == id];
+        form_data = df.to_dict()
+        
+        ep  = form_data["Episode"][0]
+        tit = form_data["Title"][0]
+        id  = form_data["Statement ID"][0]
+        aut = form_data["Statement given by"][0]
+        date = form_data["Statement given on"][0]
+        start = form_data["Start of events"][0]
+        end = form_data["End of events"][0]
+        loc = form_data["Main Location"][0]
+        sum = form_data["Short Summary"][0]
+        eye = form_data["Eyes Mentioned"][0]
+        if eye == 'Yes': eye = 0;
+        if eye == 'No': eye = 1;
+
+        with st.expander("Statement log"):
+            lod_data = statement_log_form("edit",ep,tit,aut,date,start,end,loc,eye,id,sum) 
+            lod_data["Episode_old"] = ep
+            lod_data["Title_old"] = tit
+            lod_data["Statement ID_old"] = id
+            save_log = st.button("Save changes", key="edit_log_button")
+            if save_log:
+                valid, text = edit_statement(lod_data)
+                if valid:
+                    st.success(text)
+                else:
+                    st.error(text)
+
+        st.subheader("Statement summary")
+        summary_data = statement_summary_form("summary")
+        summary_data["Episode"] = ep
+        summary_data["Title"] = tit
+        summary_data["Statement ID"] = id
+
+        save_summary = st.button("Save changes", key="edit_summary_button")
+        if save_summary:
+            valid, text = edit_summary(summary_data)
             if valid:
                 st.success(text)
             else:
