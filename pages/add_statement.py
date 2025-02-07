@@ -9,7 +9,7 @@ config.init.init("Add statements", "🪶")
 
 
 if True: # Authentication verification (to be implemented)
-    with st.form("New statement", enter_to_submit=False):
+    # with st.form("New statement", enter_to_submit=False):
         st.subheader("Add a new statement to the log")
         col = st.columns(4)
         episode = col[0].number_input("Episode",min_value=0,max_value=1000)
@@ -41,7 +41,8 @@ if True: # Authentication verification (to be implemented)
             "Eyes Mentioned": eyes,
         }
 
-        submitted = st.form_submit_button()
+        # submitted = st.form_submit_button()
+        submitted = st.button("Submit")
         if submitted:
             valid, text = write_statement(form_data)
             if valid:

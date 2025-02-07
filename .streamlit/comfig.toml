@@ -1,4 +1,8 @@
 [theme]
-backgroundColor="#000000"
-secondaryBackgroundColor="#065e06"
-textColor="#ffffff"
+base="dark"
+backgroundColor="#182821"
+secondaryBackgroundColor="#559670"
+
+
+[client]
+showSidebarNavigation = false
